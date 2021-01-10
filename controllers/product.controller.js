@@ -38,7 +38,7 @@ class APIfeatures {
 
     paginating() {
         const page = this.queryString.page * 1 || 1
-        const limit = this.queryString.limit * 1 || 2
+        const limit = this.queryString.limit * 1 || 9
         const skip = (page - 1) * limit
         this.query = this.query.skip(skip).limit(limit)
         return this
@@ -134,7 +134,7 @@ const productCtl = {
     getAllProduct: async (req, res, next) => {
         try {
             const features = new APIfeatures(
-                Product.find({ deteledAt: undefined })
+                Product.find({ deletedAt: undefined })
                     .populate({
                         path: 'createBy',
                         select: 'name',
@@ -165,7 +165,7 @@ const productCtl = {
                 products,
                 query: {
                     total: total.length,
-                    limit: req.query.limit | 2,
+                    limit: req.query.limit | 9,
                     page: req.query.page | 1,
                 },
             })
@@ -178,14 +178,14 @@ const productCtl = {
             const id = req.params.id
             const product = await Product.findOne({
                 _id: id,
-                deteledAt: undefined,
+                deletedAt: undefined,
             })
             if (!product) {
                 return res.status(400).json({ msg: 'Product not existed' })
             }
             await Product.updateOne(
-                { _id: id, deteledAt: undefined },
-                { deteledAt: Date.now() },
+                { _id: id, deletedAt: undefined },
+                { deletedAt: Date.now() },
             )
             return res.status(200).json({ msg: 'Update success' })
         } catch (e) {
@@ -195,7 +195,10 @@ const productCtl = {
     getProduct: async (req, res, next) => {
         try {
             const id = req.params.id
-            const product = await Product.findOne({ _id: id })
+            const product = await Product.findOne({
+                _id: id,
+                deletedAt: undefined,
+            })
                 .select('-inputPrice')
                 .populate([{ path: 'colors', model: 'Color' }])
                 .populate({
@@ -229,7 +232,7 @@ const productCtl = {
     update: async (req, res, next) => {
         try {
             const id = req.params.id
-            const product = await Product.findOne({ _id: id })
+            const product = await Product.findOne({ _id: id, deletedAt })
 
             if (!product) {
                 return res.status(400).json({ msg: 'Product not found' })

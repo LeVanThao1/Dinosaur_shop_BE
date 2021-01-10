@@ -30,6 +30,9 @@ const commentSchema = new mongoose.Schema(
         deletedAt: {
             type: Date,
         },
+        deletedAt: {
+            type: Date,
+        },
     },
     { timestamps: true },
 )

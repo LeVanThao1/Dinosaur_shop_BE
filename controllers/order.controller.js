@@ -144,7 +144,7 @@ const orderCtl = {
                     msg: 'Can not confirm order',
                 })
             }
-            const order = await Order.findOne({ _id: id })
+            const order = await Order.findOne({ _id: id, deletedAt: undefined })
 
             if (!order) {
                 return res.status(400).json({ msg: 'Order not found' })
@@ -231,7 +231,11 @@ const orderCtl = {
     cancelOrderByUser: async (req, res, next) => {
         try {
             const id = req.params.id
-            const order = await Order.findOne({ _id: id, user: req.user.id })
+            const order = await Order.findOne({
+                _id: id,
+                user: req.user.id,
+                deletedAt: undefined,
+            })
 
             if (!order) {
                 return res.status(400).json({ msg: 'Order not found' })
@@ -486,6 +490,7 @@ const orderCtl = {
                 .populate({
                     path: 'products.sizeId',
                 })
+                .sort({ createdAt: -1 })
             return res.status(200).json(orders)
         } catch (e) {
             return res.status(500).json({ msg: e.message })
@@ -494,7 +499,7 @@ const orderCtl = {
     getAllOrderUserByAdmin: async (req, res, next) => {
         try {
             const { id } = req.params
-            const user = await User.findOne({ _id: id })
+            const user = await User.findOne({ _id: id, deletedAt: undefined })
             if (!user) {
                 return res.status(400).json({ msg: 'Id user invalid' })
             }

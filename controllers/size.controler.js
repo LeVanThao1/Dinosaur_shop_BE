@@ -28,7 +28,7 @@ const sizeCtl = {
     delete: async (req, res, next) => {
         try {
             const { id } = req.params
-            const size = Size.findOne({ _id: id })
+            const size = Size.findOne({ _id: id, deletedAt: undefined })
             if (!size) {
                 return res.status(404).json({ msg: 'size not found' })
             }
@@ -43,7 +43,7 @@ const sizeCtl = {
         try {
             const { name } = req.body
             const { id } = req.params
-            const size = await Size.findOne({ _id: id })
+            const size = await Size.findOne({ _id: id, deletedAt: undefined })
             if (!size) {
                 return res.status(404).json({ msg: 'size not found' })
             }
@@ -64,7 +64,7 @@ const sizeCtl = {
     },
     getAll: async (req, res, next) => {
         try {
-            const sizes = await Size.find()
+            const sizes = await Size.find({ deletedAt: undefined })
 
             return res.status(200).json(sizes)
         } catch (err) {
@@ -73,7 +73,10 @@ const sizeCtl = {
     },
     getOne: async (req, res, next) => {
         try {
-            const size = await Size.findOne({ _id: req.params.id })
+            const size = await Size.findOne({
+                _id: req.params.id,
+                deletedAt: undefined,
+            })
             if (!size) {
                 return res.status(404).json({ msg: 'size not found' })
             }

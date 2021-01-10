@@ -41,7 +41,10 @@ const promotionCtl = {
     checkPromotion: async (req, res, next) => {
         try {
             const { code } = req.params
-            const promotion = await Promotion.findOne({ code })
+            const promotion = await Promotion.findOne({
+                code,
+                deletedAt: undefined,
+            })
             if (!promotion) {
                 return res.status(400).json({ msg: 'promotion is invalid' })
             }
@@ -61,7 +64,10 @@ const promotionCtl = {
     getPromotion: async (req, res, next) => {
         try {
             const { id } = req.body
-            const promotion = await Promotion.findOne({ _id: id })
+            const promotion = await Promotion.findOne({
+                _id: id,
+                deletedAt: undefined,
+            })
             if (!promotion) {
                 return res.status(400).json({ msg: 'promotion is invalid' })
             }
@@ -72,7 +78,7 @@ const promotionCtl = {
     },
     getAllPromotion: async (req, res, next) => {
         try {
-            const promotions = await Promotion.find()
+            const promotions = await Promotion.find({ deletedAt: undefined })
             return res.status(200).json(promotions)
         } catch (e) {
             return res.status(400).json({ msg: e.message })
@@ -89,7 +95,10 @@ const promotionCtl = {
                 dateEnd,
                 percent,
             }
-            const promotion = await Promotion.findOne({ _id: id })
+            const promotion = await Promotion.findOne({
+                _id: id,
+                deletedAt: undefined,
+            })
             if (!promotion) {
                 return res.status(400).json({ msg: 'promotion not found' })
             }
@@ -106,7 +115,10 @@ const promotionCtl = {
     delete: async (req, res, next) => {
         try {
             const { id } = req.params
-            const promotion = Promotion.findOne({ _id: id })
+            const promotion = Promotion.findOne({
+                _id: id,
+                deletedAt: undefined,
+            })
             if (!promotion) {
                 return res.status(404).json({ msg: 'promotion not found' })
             }

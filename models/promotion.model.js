@@ -34,6 +34,9 @@ const promotionSchemna = new mongoose.Schema(
             max: 100,
             required: [true, 'Percent begin is require'],
         },
+        deletedAt: {
+            type: Date,
+        },
     },
     {
         timestamps: true,

@@ -29,7 +29,7 @@ const styleCtl = {
     delete: async (req, res, next) => {
         try {
             const { id } = req.params
-            const style = await Style.findOne({ _id: id })
+            const style = await Style.findOne({ _id: id, deletedAt: undefined })
             if (!style) {
                 return res.status(400).json({ msg: 'Style not found' })
             }
@@ -44,7 +44,7 @@ const styleCtl = {
         try {
             const { name } = req.body
             const { id } = req.params
-            const style = await Style.findOne({ _id: id })
+            const style = await Style.findOne({ _id: id, deletedAt: undefined })
             if (!style) {
                 return res.status(400).json({ msg: 'Style not found' })
             }
@@ -65,7 +65,7 @@ const styleCtl = {
     },
     getAll: async (req, res, next) => {
         try {
-            const styles = await Style.find()
+            const styles = await Style.find({ deletedAt: undefined })
 
             return res.status(200).json(styles)
         } catch (err) {
@@ -75,7 +75,7 @@ const styleCtl = {
     getOne: async (req, res, next) => {
         try {
             const { id } = req.params
-            const style = await Style.findOne({ _id: id })
+            const style = await Style.findOne({ _id: id, deletedAt: undefined })
             if (!style) {
                 return res.status(400).json({ msg: 'Style not found' })
             }

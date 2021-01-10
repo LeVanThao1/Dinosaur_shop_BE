@@ -28,7 +28,10 @@ const typeProductCtl = {
     delete: async (req, res, next) => {
         try {
             const { id } = req.params
-            const typePd = await typeProductCtl.findOne({ _id: id })
+            const typePd = await typeProductCtl.findOne({
+                _id: id,
+                deletedAt: undefined,
+            })
             if (!typePd) {
                 return res.status(400).json({ msg: 'Type product not found' })
             }
@@ -44,7 +47,10 @@ const typeProductCtl = {
             const { name } = req.body
             const { id } = req.params
 
-            const typePd = await TypeProduct.findOne({ _id: id })
+            const typePd = await TypeProduct.findOne({
+                _id: id,
+                deletedAt: undefined,
+            })
             if (!typePd) {
                 return res.status(400).json({ msg: 'Type product not found' })
             }
@@ -65,7 +71,9 @@ const typeProductCtl = {
     },
     getAll: async (req, res, next) => {
         try {
-            const typeProducts = await TypeProduct.find()
+            const typeProducts = await TypeProduct.find({
+                deletedAt: undefined,
+            })
 
             return res.status(200).json(typeProducts)
         } catch (err) {
@@ -75,7 +83,10 @@ const typeProductCtl = {
     getOne: async (req, res, next) => {
         try {
             const { id } = req.params
-            const typePD = await TypeProduct.findOne({ _id: id })
+            const typePD = await TypeProduct.findOne({
+                _id: id,
+                deletedAt: undefined,
+            })
             if (!typePd) {
                 return res.status(400).json({ msg: 'Type product not found' })
             }

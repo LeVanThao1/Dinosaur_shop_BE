@@ -28,7 +28,10 @@ const categoryCtl = {
     delete: async (req, res, next) => {
         try {
             const { id } = req.params
-            const category = await Category.findOne({ _id: id })
+            const category = await Category.findOne({
+                _id: id,
+                deletedAt: undefined,
+            })
             if (!category) {
                 return res.status(400).json({ msg: 'Category not found' })
             }
@@ -44,7 +47,10 @@ const categoryCtl = {
         try {
             const { name } = req.body
             const { id } = req.params
-            const category = await Category.findOne({ _id: id })
+            const category = await Category.findOne({
+                _id: id,
+                deletedAt: undefined,
+            })
             if (!category) {
                 return res.status(400).json({ msg: 'Category not found' })
             }
@@ -65,7 +71,7 @@ const categoryCtl = {
     },
     getAll: async (req, res, next) => {
         try {
-            const categories = await Category.find()
+            const categories = await Category.find({ deletedAt: undefined })
 
             return res.status(200).json(categories)
         } catch (err) {
@@ -75,7 +81,10 @@ const categoryCtl = {
     getOne: async (req, res, next) => {
         try {
             const { id } = req.params
-            const category = await Category.findOne({ _id: id })
+            const category = await Category.findOne({
+                _id: id,
+                deletedAt: undefined,
+            })
             if (!category) {
                 return res.status(400).json({ msg: 'Category not found' })
             }

@@ -29,7 +29,7 @@ const colorCtl = {
     delete: async (req, res, next) => {
         try {
             const { id } = req.params
-            const color = await Color.findOne({ _id: id })
+            const color = await Color.findOne({ _id: id, deletedAt: undefined })
             if (!color) await Color.findOne({ _id: id })
             await Color.updateOne({ _id: id }, { deletedAt: new Date() })
 
@@ -43,7 +43,7 @@ const colorCtl = {
             const { name, code } = req.body
             const { id } = req.params
             const data = { name, code }
-            const color = await Color.findOne({ _id: id })
+            const color = await Color.findOne({ _id: id, deletedAt: undefined })
             if (!color) {
                 return res.status(400).json({ msg: 'Color not found' })
             }
@@ -62,7 +62,7 @@ const colorCtl = {
     },
     getAll: async (req, res, next) => {
         try {
-            const colors = await Color.find()
+            const colors = await Color.find({ deletedAt: undefined })
 
             return res.status(200).json(colors)
         } catch (err) {
@@ -71,7 +71,10 @@ const colorCtl = {
     },
     getOne: async (req, res, next) => {
         try {
-            const color = await Color.findOne({ _id: req.params.id })
+            const color = await Color.findOne({
+                _id: req.params.id,
+                deletedAt: undefined,
+            })
             if (!color) {
                 return res.status(400).json({ msg: 'Color not found' })
             }

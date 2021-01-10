@@ -28,7 +28,10 @@ const materialCtl = {
     delete: async (req, res, next) => {
         try {
             const { id } = req.params
-            const material = await Material.findOne({ _id: id })
+            const material = await Material.findOne({
+                _id: id,
+                deletedAt: undefined,
+            })
 
             if (!material) {
                 return res.status(404).json({ msg: 'Material not found' })
@@ -46,7 +49,10 @@ const materialCtl = {
             const { name } = req.body
             const { id } = req.params
 
-            const material = await Material.findOne({ _id: id })
+            const material = await Material.findOne({
+                _id: id,
+                deletedAt: undefined,
+            })
             if (!material) {
                 return res.status(400).json({ msg: 'Material not found' })
             }
@@ -67,7 +73,7 @@ const materialCtl = {
     },
     getAll: async (req, res, next) => {
         try {
-            const materials = await Material.find()
+            const materials = await Material.find({ deletedAt: undefined })
 
             return res.status(200).json(materials)
         } catch (err) {
@@ -76,7 +82,10 @@ const materialCtl = {
     },
     getOne: async (req, res, next) => {
         try {
-            const material = await Material.findOne(req.params.id)
+            const material = await Material.findOne({
+                _id: req.params.id,
+                deletedAt: undefined,
+            })
             if (!material) {
                 return res.status(400).json({ msg: 'Material not found' })
             }

@@ -158,7 +158,7 @@ const userCtl = {
     forgotPassword: async (req, res, next) => {
         try {
             const { email } = req.body
-            const user = await User.findOne({ email })
+            const user = await User.findOne({ email, deletedAt: undefined })
             if (!user) {
                 return res
                     .status(400)
@@ -187,6 +187,7 @@ const userCtl = {
             }
             const getUser = await User.findOne({
                 _id: user.id,
+                deletedAt: undefined,
             }).lean()
             if (!getUser) {
                 return res.status(400).json({ msg: 'User not found' })
@@ -214,7 +215,10 @@ const userCtl = {
     },
     getUserInfor: async (req, res, next) => {
         try {
-            const user = await User.findById(req.user.id).select('-password')
+            const user = await User.findOne({
+                _id: req.user.id,
+                deletedAt: undefined,
+            }).select('-password')
             res.status(200).json(user)
         } catch (err) {
             return res.status(500).json({ msg: err.message })
@@ -222,7 +226,9 @@ const userCtl = {
     },
     getUsersAllInfor: async (req, res, next) => {
         try {
-            const users = await User.find().select('-password')
+            const users = await User.find({ deletedAt: undefined }).select(
+                '-password',
+            )
 
             res.status(200).json(users)
         } catch (err) {
@@ -239,7 +245,12 @@ const userCtl = {
     },
     deleteUser: async (req, res) => {
         try {
-            await User.findByIdAndUpdate(
+            const { id } = req.params
+            const user = await User.findOne({ _id: id, deletedAt: undefined })
+            if (!user) {
+                return res.status(400).json({ msg: 'User not found' })
+            }
+            await User.updateOne(
                 { _id: id, deletedAt: undefined },
                 { deletedAt: Date.now() },
             )
@@ -252,15 +263,19 @@ const userCtl = {
     updateUsersRole: async (req, res) => {
         try {
             const { role } = req.body
-
-            await User.findOneAndUpdate(
+            const { id } = req.params
+            const user = await User.findOne({ _id: id, deletedAt: undefined })
+            if (!user) {
+                return res.status(400).json({ msg: 'User not found' })
+            }
+            await User.updateOne(
                 { _id: req.params.id },
                 {
                     role,
                 },
             )
 
-            res.status(200).json({ msg: 'Update Success!' })
+            return res.status(200).json({ msg: 'Update Success!' })
         } catch (err) {
             return res.status(500).json({ msg: err.message })
         }
@@ -295,7 +310,7 @@ const userCtl = {
 
             await User.findOneAndUpdate({ _id: req.user.id }, data)
 
-            res.status(200).json({ msg: 'Update Success!' })
+            return res.status(200).json({ msg: 'Update Success!' })
         } catch (err) {
             return res.status(500).json({ msg: err.message })
         }
@@ -400,7 +415,6 @@ const userCtl = {
     },
     changeCart: async (req, res, next) => {
         try {
-            console.log(1)
             const { user, body } = req
 
             const cart = body.cart.map((ca) => {
@@ -448,7 +462,10 @@ const userCtl = {
     getUserInforByAdmin: async (req, res, next) => {
         try {
             const { id } = req.params
-            const user = await User.findOne({ _id: id }).select('-password')
+            const user = await User.findOne({
+                _id: id,
+                deletedAt: undefined,
+            }).select('-password')
             if (!user) {
                 return res.status(400).json({ msg: 'User not found' })
             }
