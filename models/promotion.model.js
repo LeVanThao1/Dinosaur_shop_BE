@@ -30,6 +30,7 @@ const promotionSchemna = new mongoose.Schema(
         },
         percent: {
             type: Number,
+            default: 0,
             min: 0,
             max: 100,
             required: [true, 'Percent begin is require'],

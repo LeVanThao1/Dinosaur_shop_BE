@@ -133,42 +133,31 @@ const productCtl = {
     },
     getAllProduct: async (req, res, next) => {
         try {
-            const features = new APIfeatures(
-                Product.find({ deletedAt: undefined })
-                    .populate({
-                        path: 'createBy',
-                        select: 'name',
-                    })
-                    .populate({
-                        path: 'type',
-                    })
-                    .populate({
-                        path: 'colors',
-                    })
-                    .populate({
-                        path: 'category',
-                    })
-                    .populate({
-                        path: 'style',
-                    })
-                    .populate({
-                        path: 'material',
-                    })
-                    .select('-inputPrice -size'),
-                req.query,
-            )
-                .filtering()
-                .sorting()
-            const total = await features.query
-            const products = await features.paginating().query
-            return res.status(200).json({
-                products,
-                query: {
-                    total: total.length,
-                    limit: req.query.limit | 9,
-                    page: req.query.page | 1,
-                },
-            })
+            const products = await Product.find({ deletedAt: undefined })
+                .populate({
+                    path: 'createBy',
+                    select: 'name',
+                })
+                .populate({
+                    path: 'type',
+                })
+                .populate({
+                    path: 'colors',
+                })
+                .populate({
+                    path: 'category',
+                })
+                .populate({
+                    path: 'style',
+                })
+                .populate({
+                    path: 'material',
+                })
+                .select('-inputPrice -size')
+                .sort('-createdAt')
+            // const total = await features.query
+            // const products = await features.paginating().query
+            return res.status(200).json(products)
         } catch (err) {
             return res.status(500).json({ msg: err.message })
         }

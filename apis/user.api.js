@@ -9,11 +9,14 @@ router.post('/activation', userCtl.activationEmail)
 
 router.post('/login', userCtl.login)
 
+router.post('/admin/login', userCtl.loginAdmin)
+
 router.post('/refresh_token', userCtl.getAccessToken)
 
 router.post('/forgot_password', userCtl.forgotPassword)
 
 router.post('/reset', auth, userCtl.resetPassword)
+router.post('/resetpw', auth, userCtl.resetPW)
 
 router.get('/infor', auth, userCtl.getUserInfor)
 

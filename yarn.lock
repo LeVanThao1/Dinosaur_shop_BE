@@ -955,10 +955,10 @@ googleapis-common@^4.4.1:
     url-template "^2.0.8"
     uuid "^8.0.0"
 
-googleapis@^63.0.0:
-  version "63.0.0"
-  resolved "https://registry.yarnpkg.com/googleapis/-/googleapis-63.0.0.tgz#ff48d7d8966162b59e303f3f9b6e2245555bb1d3"
-  integrity sha512-wixBalZFz9qLFJqKcEaKRAKuWAf20qw35/vVN/0ogfhIMlGuDUNE3groAPdaqAmaE3sTLSEe8+XRNIx3lxOhcQ==
+googleapis@^67.0.0:
+  version "67.0.0"
+  resolved "https://registry.yarnpkg.com/googleapis/-/googleapis-67.0.0.tgz#ce0b92dcf5e4bc0fd1b82666a1625eb37fd3dc36"
+  integrity sha512-luhulHrk42DruR+c12W2sY2rrEVoKVdjaZDuHWSxcp1qz+VxvWQpuiK2QDLCXmo36/VFPMaa+Y7rRUR+Qqzd7w==
   dependencies:
     google-auth-library "^6.0.0"
     googleapis-common "^4.4.1"
@@ -2451,6 +2451,11 @@ vary@^1, vary@~1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/vary/-/vary-1.1.2.tgz#2299f02c6ded30d4a5961b0b9f74524a18f634fc"
   integrity sha1-IpnwLG3tMNSllhsLn3RSShj2NPw=
+
+voucher-code-generator@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/voucher-code-generator/-/voucher-code-generator-1.1.1.tgz#c1e79d7102506ce50c65b824a9f4de137dd2718b"
+  integrity sha1-weedcQJQbOUMZbgkqfTeE33ScYs=
 
 which-module@^2.0.0:
   version "2.0.0"

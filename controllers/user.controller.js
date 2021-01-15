@@ -205,7 +205,9 @@ const userCtl = {
                 },
             )
 
-            res.status(200).json({ msg: 'Password successfully changed!' })
+            res.status(200).json({
+                msg: 'Password successfully changed!',
+            })
         } catch (e) {
             console.log(e)
             return res.status(500).json({
@@ -472,6 +474,71 @@ const userCtl = {
             return res.status(200).json(user)
         } catch (e) {
             return res.status(500).json({ msg: e.message })
+        }
+    },
+    loginAdmin: async (req, res, next) => {
+        try {
+            const { email, password } = req.body
+            const user = await User.findOne({ email, deletedAt: undefined })
+            if (!user) {
+                return res
+                    .status(400)
+                    .json({ msg: 'This email does not exist.' })
+            }
+            if (user.role !== 1) {
+                return res.status(400).json({ msg: 'Account has no access' })
+            }
+            const isMatch = await bcrypt.compare(password, user.password)
+
+            if (!isMatch) {
+                return res.status(400).json({ msg: 'Password is incorrect.' })
+            }
+
+            const refresh_token = createRefreshToken({ id: user._id })
+            res.cookie('refresh_token', refresh_token, {
+                httpOnly: false,
+                path: '/user/refresh_token',
+                maxAge: 30 * 24 * 60 * 60 * 1000, // 7 days
+            })
+            res.status(200).json({ msg: 'Login success!' })
+        } catch (e) {
+            return res.status(500).json({
+                msg: e.message,
+            })
+        }
+    },
+    updateNotifi: async (req, res, next) => {
+        try {
+            const { id } = req.params
+            // const
+        } catch (e) {}
+    },
+    resetPW: async (req, res, next) => {
+        try {
+            const { user, body } = req
+            const { password } = body
+
+            if (!password || !user) {
+                return res
+                    .status(400)
+                    .json({ msg: 'Please fill in all fields.' })
+            }
+            const hashPassword = await bcrypt.hash(password, 12)
+
+            await User.updateOne(
+                { _id: user.id },
+                {
+                    password: hashPassword,
+                },
+            )
+
+            res.status(200).json({
+                msg: 'Password successfully changed!. Please login now',
+            })
+        } catch (e) {
+            return res.status(500).json({
+                msg: e.message,
+            })
         }
     },
 }
