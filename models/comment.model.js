@@ -16,20 +16,22 @@ const commentSchema = new mongoose.Schema(
             type: String,
             required: [true, 'Content is require'],
         },
-        // comfirm: {
-        //     type: Boolean,
-        //     default: false,
-        // },
-        like: {
-            type: Array,
+        confirm: {
+            type: Boolean,
+            default: false,
         },
-        reply: {
-            type: Array,
-            default: [],
-        },
-        deletedAt: {
-            type: Date,
-        },
+        like: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'User',
+            },
+        ],
+        disLike: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'User',
+            },
+        ],
         deletedAt: {
             type: Date,
         },

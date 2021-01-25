@@ -13,9 +13,10 @@ const commentCtl = {
             }
             const newComment = new Comment({
                 productId,
-                user: req.user.id,
+                userId: req.user.id,
                 content,
-                reply: [],
+                like: [],
+                disLike: [],
             })
 
             await newComment.save()
@@ -44,7 +45,61 @@ const commentCtl = {
             return res.status(500).json({ msg: err.message })
         }
     },
+    like: async function (req, res, next) {
+        try {
+            const comment = await Comment.findOne({
+                _id: req.params.id,
+                deletedAt: undefined,
+                confirm: true,
+            })
 
+            if (!comment) {
+                return res.status(400).json({ msg: 'Comment not found' })
+            }
+
+            if (comment.like.some((id) => id === req.user.id)) {
+                return res.status(400).json({ msg: 'Comment was like' })
+            }
+            await Comment.updateOne(
+                { _id: req.params.id },
+                {
+                    $push: { like: req.user.id },
+                    $pull: { disLike: req.user.id },
+                },
+            )
+            return res.status(200).json({ msg: 'Like comment success!' })
+        } catch (err) {
+            return res.status(500).json({ msg: err.message })
+        }
+    },
+    dislike: async function (req, res, next) {
+        try {
+            const comment = await Comment.findOne({
+                _id: req.params.id,
+                deletedAt: undefined,
+                confirm: true,
+            })
+
+            if (!comment) {
+                return res.status(400).json({ msg: 'Comment not found' })
+            }
+
+            if (comment.disLike.some((id) => id === req.user.id)) {
+                return res.status(400).json({ msg: 'Comment is not liked' })
+            }
+
+            await Comment.updateOne(
+                { _id: req.params.id },
+                {
+                    $pull: { like: req.user.id },
+                    $push: { disLike: req.user.id },
+                },
+            )
+            return res.status(200).json({ msg: 'dislike comment success!' })
+        } catch (err) {
+            return res.status(500).json({ msg: err.message })
+        }
+    },
     confirmComment: async (req, res, next) => {
         try {
             const comment = Comment.findOne({
@@ -68,6 +123,11 @@ const commentCtl = {
     getAllByAdmin: async (req, res, next) => {
         try {
             const comments = await Comment.find({ deletedAt: undefined })
+                .populate({
+                    path: 'userId',
+                    select: 'name avatar',
+                })
+                .sort({ createdAt: -1 })
 
             return res.status(200).json(comments)
         } catch (err) {
@@ -79,11 +139,11 @@ const commentCtl = {
             const comments = await Comment.find({
                 productId: req.params.id,
                 deletedAt: undefined,
-                // confirm: true,
+                confirm: true,
             })
                 .populate({
                     path: 'userId',
-                    selecte: 'name',
+                    select: 'name avatar',
                 })
                 .sort({ createdAt: -1 })
 
