@@ -3,7 +3,8 @@ const _ = require('lodash')
 const evaluteCtl = {
     create: async (req, res, next) => {
         try {
-            const { star, productId } = req.body
+            const productId = req.params.id
+            const { star } = req.body
             // const productId = req.params
 
             if (!productId || !star) {
@@ -30,7 +31,7 @@ const evaluteCtl = {
                 const newEvalute = new Evalute({
                     star,
                     productId,
-                    user: req.user.id,
+                    userId: req.user.id,
                 })
 
                 await newEvalute.save()
@@ -87,8 +88,17 @@ const evaluteCtl = {
             const evalutes = await Evalute.find({
                 productId: req.params.id,
                 deletedAt: undefined,
-            })
-
+            }).select('userId star')
+            // const evalutes = await Evalute.aggregate([
+            //     { $match: { productID: req.params.id } },
+            //     {
+            //         $group: {
+            //             _id: new Date(),
+            //             totalStart: { $sum: '$quantity' },
+            //             count: { $sum: 1 },
+            //         },
+            //     },
+            // ])
             return res.status(200).json(evalutes)
         } catch (err) {
             return res.status(500).json({ msg: err.message })

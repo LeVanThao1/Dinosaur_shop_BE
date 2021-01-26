@@ -76,6 +76,7 @@ app.use('/api', require('./apis/order.api'))
 app.use('/api', require('./apis/comment.api'))
 app.use('/api', require('./apis/payment.api'))
 app.use('/api', require('./apis/promotion.api'))
+app.use('/api', require('./apis/evalute.api'))
 //connect database
 require('./helper/init-mongoose')
 // Routes
